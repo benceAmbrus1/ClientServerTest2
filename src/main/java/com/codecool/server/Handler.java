@@ -1,23 +1,19 @@
 package com.codecool.server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Handler extends Thread {
 
     private String name;
     private Socket socket;
-    private BufferedReader input;
-    private PrintWriter output;
+    private DataInputStream input;
+    private DataOutputStream output;
     private static List<String> names = new ArrayList<>();
-    private static Set<PrintWriter> outputs = new HashSet<>();
+    private static List<DataOutputStream> outputs = new ArrayList<>();
 
     public Handler(Socket socket) {
         this.socket = socket;
@@ -26,13 +22,13 @@ public class Handler extends Thread {
     @Override
     public void run() {
         try {
-            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new PrintWriter(socket.getOutputStream());
+            input = new DataInputStream(socket.getInputStream());
+            output = new DataOutputStream(socket.getOutputStream());
 
             while (true) {
-                output.println("Add your name pls");
-                name = input.readLine();
-                if (name == null) {
+                output.writeUTF("First add your name please");
+                name = input.readUTF();
+                if (name.equals("")) {
                     return;
                 }
                 synchronized (names) {
@@ -40,20 +36,17 @@ public class Handler extends Thread {
                         names.add(name);
                         break;
                     }
+                    output.writeUTF("ERROR: This name already exist!!");
                 }
             }
 
-            output.println("Name accepted");
+            output.writeUTF("Name accepted, have a good chating");
             outputs.add(output);
 
             while (true) {
-                String incoming = input.readLine();
-                if (incoming == null) {
-                    return;
-                }
-
-                for (PrintWriter outpts : outputs) {
-                    outpts.println(incoming);
+                String incoming = input.readUTF();
+                for (DataOutputStream outpts : outputs) {
+                    outpts.writeUTF("Message from "+ name +": "+ incoming);
                 }
             }
         } catch (IOException e) {
