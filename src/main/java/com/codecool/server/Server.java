@@ -9,7 +9,7 @@ public class Server {
 
     private static final int PORT = 38388;
 
-    public static void main(String[] args) throws Exception {
+    public void run() throws Exception {
         ServerSocket ss = new ServerSocket(PORT);
         System.out.println("Server is running: " + ss.getInetAddress().getLocalHost() +"|"+ PORT );
         try{

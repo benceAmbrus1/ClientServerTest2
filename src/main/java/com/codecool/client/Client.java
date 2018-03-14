@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Client {
 
-    public static void main(String[] args) throws Exception {
+    public void run() throws Exception {
 
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please add IP address: ");
