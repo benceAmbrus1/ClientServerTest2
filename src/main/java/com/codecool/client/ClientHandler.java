@@ -7,16 +7,14 @@ public class ClientHandler {
 
     private Socket socket;
     private RecieveMessage recieve;
-    private SendMessage send;
 
-    public ClientHandler(Socket socket, RecieveMessage recieve, SendMessage send) {
+
+    public ClientHandler(Socket socket, RecieveMessage recieve) {
         this.socket = socket;
         this.recieve = recieve;
-        this.send = send;
     }
 
     public void run() throws IOException{
-        send.start();
         recieve.start();
     }
 }

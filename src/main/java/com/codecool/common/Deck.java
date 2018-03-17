@@ -8,6 +8,7 @@ public class Deck {
     private List<Card> cardsInDeck;
 
     public Deck(List<Card> cardsInDeck) {
+
         this.cardsInDeck = cardsInDeck;
     }
 

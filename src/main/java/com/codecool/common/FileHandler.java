@@ -1,19 +1,35 @@
 package com.codecool.common;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileHandler {
 
     private List<Card> cards = new ArrayList<>();
 
-    public List<Card> loadCsv(String fileName) {
+    public List<Card> loadCsv(String fileName) throws URISyntaxException {
         try {
+            URI uri = getClass().getClassLoader().getResource(fileName).toURI();
 
-            BufferedReader fileReader = new BufferedReader(new FileReader(fileName));
+            final Path path;
+
+            if (uri.toString().contains(".jar!")) {
+                final Map<String, String> env = new HashMap<>();
+                final String[] array = uri.toString().split("!");
+                final FileSystem fs = FileSystems.newFileSystem(URI.create(array[0]), env);
+                path = fs.getPath(array[1]);
+            } else
+                path = Paths.get(uri);
+
+            InputStream newInputStream = Files.newInputStream(path);
+            BufferedReader fileReader = new BufferedReader(new InputStreamReader(newInputStream) );
+
             String firstLine = fileReader.readLine();
             String[] listFirstline = firstLine.split(",");
             String tempAttribute1Name = listFirstline[0];
