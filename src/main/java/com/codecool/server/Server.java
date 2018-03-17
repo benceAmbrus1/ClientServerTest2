@@ -34,7 +34,7 @@ public class Server {
     }
 
     public void run() throws Exception {
-        System.out.println("Server is running: " + ss.getInetAddress().getHostAddress() + "|" + PORT);
+        System.out.println("Server is running ");
 
         //choose then create deck
         System.out.println("Which cardgame you wish to play?");
