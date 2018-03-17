@@ -25,6 +25,7 @@ public class Server {
     private Player nextPlayer;
     private Player winnerPlayer;
     private int numberOfPlayers;
+    private String nextPlayerChose;
 
     public Server(int numberOfPlayers) throws Exception {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -82,7 +83,6 @@ public class Server {
                 senMessageAllButNextPlayer(nextPlayer, nextPlayer.getPlayerName() + " thinking, please wait.");
                 sendMessageToPlayer(nextPlayer, "It's your Turn");
                 listOutAttributOptions(nextPlayer);
-                String nextPlayerChose;
                 while(true) {
                     sendMessageToPlayer(nextPlayer, "CARDACHOOSE: " + nextPlayer.getPlayerName() + " choose an attribute number.");
                     nextPlayerChose = nextPlayer.getInput().readUTF();
@@ -103,14 +103,16 @@ public class Server {
                     System.out.println("CH1");
                     if(winnerPlayer == null){
                         addCardstoTheTempDeck(getComparedCards());
+                        sendMessageToAllPlayer("its a tie round, compared attribut number is: " + nextPlayerChose);
                     }else{
                         addCardsToTheWinner(getComparedCards());
+                        senMessageAllButNextPlayer(winnerPlayer, "You lost this round :(, " + winnerPlayer.getPlayerName() + " choose attribute " + nextPlayerChose +".");
+                        sendMessageToPlayer(winnerPlayer, "You won this round");
                     }
                     for (Player player : players) {
                         System.out.print("|" + player.getPlayerName() + ": got " + player.getCardsInHand().size() + "cards|");
                     }
-                    senMessageAllButNextPlayer(winnerPlayer, "You lost this round :(");
-                    sendMessageToPlayer(winnerPlayer, "You won this round");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
